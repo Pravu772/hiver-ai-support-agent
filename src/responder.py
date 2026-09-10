@@ -84,40 +84,34 @@ def generate_grounded_reply(
 
     client_type, client = client_info
 
-    prompt = f"""You are an official customer support representative for PlayStation Support (@AskPlayStation).
-Draft a helpful, polite, and concise reply to the customer message below.
-
-Tone & Guidelines:
-1. Tone: Friendly, empathetic, concise, and professional (PlayStation Support brand voice).
-2. Grounding: You MUST base your advice strictly on the official historical precedents provided below.
-3. Safety: For bans or suspensions, never promise an unban; state the policy clearly. For refunds, direct to official forms.
-4. Length: Keep it concise (under 280 characters if possible, maximum 350 characters). Do not hallucinate fake URLs.
+    prompt = f"""You are PlayStation Support (@AskPlayStation).
+Draft ONLY the direct reply tweet to the customer inquiry below.
+Guidelines:
+- Tone: Friendly, concise, empathetic, and professional (PlayStation brand voice).
+- Length: Keep it under 280 characters.
+- Grounding: Base your advice strictly on official PlayStation policy. For bans, state policy and tell them to check email/appeals. For refunds or error codes, provide clear guidance.
+- Output ONLY the single tweet message. Do NOT include markdown headings, quotes, preamble, or conversational commentary.
 
 Intent: {intent}
-
 {grounding_context}
+{"Thread Context: " + context if context else ""}
+Customer Message: "{customer_text}"
 
-{"Thread Context:" if context else ""}
-{context or ""}
-
-Customer Message:
-"{customer_text}"
-
-Draft Official Reply:"""
+Reply:"""
 
     try:
         if client_type == "genai":
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.6-flash",
                 contents=prompt,
-                config={"temperature": 0.2, "max_output_tokens": 150}
+                config={"temperature": 0.2}
             )
             reply = response.text.strip()
         else:
-            model = client.GenerativeModel("gemini-2.5-flash")
+            model = client.GenerativeModel("gemini-3.6-flash")
             response = model.generate_content(
                 prompt,
-                generation_config={"temperature": 0.2, "max_output_tokens": 150}
+                generation_config={"temperature": 0.2}
             )
             reply = response.text.strip()
 

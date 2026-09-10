@@ -8,6 +8,11 @@ import os
 import json
 import re
 from typing import Dict, Any, Optional
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Formal Intent Taxonomy derived empirically from AskPlayStation dataset
 INTENT_TAXONOMY = {
@@ -141,13 +146,13 @@ Respond ONLY with valid JSON in this exact structure:
     try:
         if client_type == "genai":
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.6-flash",
                 contents=prompt,
                 config={"temperature": 0.0, "response_mime_type": "application/json"}
             )
             raw = response.text
         else:
-            model = client.GenerativeModel("gemini-2.5-flash")
+            model = client.GenerativeModel("gemini-3.6-flash")
             response = model.generate_content(
                 prompt,
                 generation_config={"temperature": 0.0}
