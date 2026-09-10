@@ -2,6 +2,7 @@
 twcs.csv
 *.parquet
 *.zip
+*.pkl
 
 # Python
 __pycache__/
