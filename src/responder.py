@@ -99,39 +99,64 @@ Customer Message: "{customer_text}"
 
 Reply:"""
 
-    try:
-        if client_type == "genai":
-            response = client.models.generate_content(
-                model="gemini-3.6-flash",
-                contents=prompt,
-                config={"temperature": 0.2}
-            )
-            reply = response.text.strip()
-        else:
-            model = client.GenerativeModel("gemini-3.6-flash")
-            response = model.generate_content(
-                prompt,
-                generation_config={"temperature": 0.2}
-            )
-            reply = response.text.strip()
+    models_to_try = [
+        os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite"),
+        "gemini-3.1-flash-lite-preview",
+        "gemini-3-flash-preview",
+        "gemini-3.5-flash-lite",
+    ]
+    seen = set()
+    models_to_try = [m for m in models_to_try if not (m in seen or seen.add(m))]
 
-        # Clean any quotes or prefixes
-        if reply.startswith('"') and reply.endswith('"'):
-            reply = reply[1:-1].strip()
+    reply = None
+    last_err = None
+    for attempt in range(12):
+        cur_model = models_to_try[attempt % len(models_to_try)]
+        try:
+            if client_type == "genai":
+                response = client.models.generate_content(
+                    model=cur_model,
+                    contents=prompt,
+                    config={"temperature": 0.2}
+                )
+                reply = response.text.strip()
+                break
+            else:
+                model = client.GenerativeModel(cur_model)
+                response = model.generate_content(
+                    prompt,
+                    generation_config={"temperature": 0.2}
+                )
+                reply = response.text.strip()
+                break
+        except Exception as e:
+            last_err = e
+            if "429" in str(e) or "quota" in str(e).lower() or "resource_exhausted" in str(e).lower():
+                import time
+                time.sleep(3.0)
+                continue
+            import time
+            time.sleep(1.0)
+            continue
 
-        return {
-            "reply": reply,
-            "source": "gemini",
-            "grounded_on_count": len(retrieved_resolutions)
-        }
-    except Exception as e:
+    if not reply:
         fallback = FALLBACK_RESPONSES.get(intent, FALLBACK_RESPONSES["general_inquiry_other"])
         return {
             "reply": fallback,
             "source": "fallback_error",
-            "error": str(e),
+            "error": str(last_err),
             "grounded_on_count": len(retrieved_resolutions)
         }
+
+    # Clean any quotes or prefixes
+    if reply.startswith('"') and reply.endswith('"'):
+        reply = reply[1:-1].strip()
+
+    return {
+        "reply": reply,
+        "source": "gemini",
+        "grounded_on_count": len(retrieved_resolutions)
+    }
 
 if __name__ == "__main__":
     sample_q = "my psn account got banned for no reason"

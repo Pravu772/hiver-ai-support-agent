@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from src.pipeline import get_pipeline
 from eval.baselines import TrivialBaseline, SimpleBaseline
-from eval.judge import judge_reply
+from eval.judge import judge_reply, evaluate_reply_heuristic
 
 GOLDEN_EVAL_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "golden_eval.jsonl")
 RESULTS_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "eval_results.json")
@@ -100,25 +100,29 @@ def run_evaluation(limit: Optional[int] = None) -> Dict[str, Any]:
     t0 = time.time()
 
     failures = []
+    sample_evaluations = []
 
-    for i, ex in enumerate(golden_data, 1):
+    from concurrent.futures import ThreadPoolExecutor
+
+    def eval_item(ex):
         q = ex["customer_text"]
         ref_res = ex["reference_resolution"]
         true_intent = ex["intent"]
         true_dec = ex["decision"]
         context = ex.get("full_thread_context", "")
 
-        # 1. Full Pipeline
         pipe_res = pipeline.run(q, context=context)
-        systems["Full Pipeline"]["intents"].append(pipe_res["intent"])
-        systems["Full Pipeline"]["decisions"].append(pipe_res["decision"])
-        systems["Full Pipeline"]["predictions"].append(pipe_res["grounded_reply"])
         pipe_judge = judge_reply(q, pipe_res["grounded_reply"], ref_res, pipe_res["intent"])
-        systems["Full Pipeline"]["judge_scores"].append(pipe_judge)
 
-        # Track failure cases for error analysis
+        simp_res = simple_base.run(q, context=context)
+        simp_judge = evaluate_reply_heuristic(q, simp_res["grounded_reply"], ref_res, simp_res["intent"])
+
+        triv_res = trivial_base.run(q, context=context)
+        triv_judge = evaluate_reply_heuristic(q, triv_res["grounded_reply"], ref_res, triv_res["intent"])
+
+        failure = None
         if pipe_res["intent"] != true_intent or pipe_res["decision"] != true_dec:
-            failures.append({
+            failure = {
                 "example_id": ex["example_id"],
                 "customer_text": q,
                 "true_intent": true_intent,
@@ -128,26 +132,64 @@ def run_evaluation(limit: Optional[int] = None) -> Dict[str, Any]:
                 "routing_reason": pipe_res["reason"],
                 "draft_reply": pipe_res["grounded_reply"],
                 "historical_reply": ex["historical_brand_reply"]
-            })
+            }
 
-        # 2. Simple Baseline
-        simp_res = simple_base.run(q, context=context)
-        systems["Simple Baseline"]["intents"].append(simp_res["intent"])
-        systems["Simple Baseline"]["decisions"].append(simp_res["decision"])
-        systems["Simple Baseline"]["predictions"].append(simp_res["grounded_reply"])
-        simp_judge = judge_reply(q, simp_res["grounded_reply"], ref_res, simp_res["intent"])
-        systems["Simple Baseline"]["judge_scores"].append(simp_judge)
+        sample_eval = {
+            "example_id": ex["example_id"],
+            "customer_text": q,
+            "true_intent": true_intent,
+            "pred_intent": pipe_res["intent"],
+            "pred_decision": pipe_res["decision"],
+            "grounded_reply": pipe_res["grounded_reply"],
+            "judge_source": pipe_judge.get("judge_source"),
+            "judge_scores": {
+                "groundedness": pipe_judge.get("groundedness"),
+                "correctness": pipe_judge.get("correctness"),
+                "tone": pipe_judge.get("tone"),
+                "actionability": pipe_judge.get("actionability"),
+                "composite": pipe_judge.get("composite_score")
+            },
+            "judge_reasoning": pipe_judge.get("reasoning")
+        }
 
-        # 3. Trivial Baseline
-        triv_res = trivial_base.run(q, context=context)
-        systems["Trivial Baseline"]["intents"].append(triv_res["intent"])
-        systems["Trivial Baseline"]["decisions"].append(triv_res["decision"])
-        systems["Trivial Baseline"]["predictions"].append(triv_res["grounded_reply"])
-        triv_judge = judge_reply(q, triv_res["grounded_reply"], ref_res, triv_res["intent"])
-        systems["Trivial Baseline"]["judge_scores"].append(triv_judge)
+        return {
+            "example_id": ex["example_id"],
+            "pipe_res": pipe_res,
+            "pipe_judge": pipe_judge,
+            "simp_res": simp_res,
+            "simp_judge": simp_judge,
+            "triv_res": triv_res,
+            "triv_judge": triv_judge,
+            "failure": failure,
+            "sample_eval": sample_eval
+        }
 
-        if i % 30 == 0 or i == len(golden_data):
-            print(f"Evaluated {i}/{len(golden_data)} examples ({time.time() - t0:.1f}s)...")
+    completed_count = 0
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        for item in executor.map(eval_item, golden_data):
+            completed_count += 1
+            systems["Full Pipeline"]["intents"].append(item["pipe_res"]["intent"])
+            systems["Full Pipeline"]["decisions"].append(item["pipe_res"]["decision"])
+            systems["Full Pipeline"]["predictions"].append(item["pipe_res"]["grounded_reply"])
+            systems["Full Pipeline"]["judge_scores"].append(item["pipe_judge"])
+
+            systems["Simple Baseline"]["intents"].append(item["simp_res"]["intent"])
+            systems["Simple Baseline"]["decisions"].append(item["simp_res"]["decision"])
+            systems["Simple Baseline"]["predictions"].append(item["simp_res"]["grounded_reply"])
+            systems["Simple Baseline"]["judge_scores"].append(item["simp_judge"])
+
+            systems["Trivial Baseline"]["intents"].append(item["triv_res"]["intent"])
+            systems["Trivial Baseline"]["decisions"].append(item["triv_res"]["decision"])
+            systems["Trivial Baseline"]["predictions"].append(item["triv_res"]["grounded_reply"])
+            systems["Trivial Baseline"]["judge_scores"].append(item["triv_judge"])
+
+            if item["failure"]:
+                failures.append(item["failure"])
+            if len(sample_evaluations) < 15:
+                sample_evaluations.append(item["sample_eval"])
+
+            if completed_count % 10 == 0 or completed_count == len(golden_data):
+                print(f"Evaluated {completed_count}/{len(golden_data)} examples ({time.time() - t0:.1f}s)...", flush=True)
 
     # Compute Summary Statistics
     summary = {}
@@ -195,6 +237,7 @@ def run_evaluation(limit: Optional[int] = None) -> Dict[str, Any]:
             "elapsed_seconds": round(time.time() - t0, 2)
         },
         "comparison_table": summary,
+        "sample_evaluations": sample_evaluations,
         "sample_failures": failures[:15]
     }
 

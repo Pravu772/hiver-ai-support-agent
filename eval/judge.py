@@ -146,42 +146,70 @@ Respond ONLY with valid JSON in this exact structure:
 }}
 """
 
-    try:
-        if client_type == "genai":
-            response = client.models.generate_content(
-                model="gemini-3.6-flash",
-                contents=prompt,
-                config={"temperature": 0.0, "response_mime_type": "application/json"}
-            )
-            raw = response.text
-        else:
-            model = client.GenerativeModel("gemini-3.6-flash")
-            response = model.generate_content(
-                prompt,
-                generation_config={"temperature": 0.0}
-            )
-            raw = response.text
+    models_to_try = [
+        os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite"),
+        "gemini-3.1-flash-lite-preview",
+        "gemini-3-flash-preview",
+        "gemini-3.5-flash-lite",
+    ]
+    seen = set()
+    models_to_try = [m for m in models_to_try if not (m in seen or seen.add(m))]
 
+    raw = None
+    last_err = None
+    for attempt in range(12):
+        cur_model = models_to_try[attempt % len(models_to_try)]
+        try:
+            if client_type == "genai":
+                response = client.models.generate_content(
+                    model=cur_model,
+                    contents=prompt,
+                    config={"temperature": 0.0, "response_mime_type": "application/json"}
+                )
+                raw = response.text
+                break
+            else:
+                model = client.GenerativeModel(cur_model)
+                response = model.generate_content(
+                    prompt,
+                    generation_config={"temperature": 0.0}
+                )
+                raw = response.text
+                break
+        except Exception as e:
+            last_err = e
+            if "429" in str(e) or "quota" in str(e).lower() or "resource_exhausted" in str(e).lower():
+                import time
+                time.sleep(3.0)
+                continue
+            import time
+            time.sleep(1.0)
+            continue
+
+    if raw:
         clean_json = re.search(r"\{.*\}", raw, re.DOTALL)
         if clean_json:
-            data = json.loads(clean_json.group(0))
-            g = float(data.get("groundedness", 3.0))
-            c = float(data.get("correctness", 3.0))
-            t = float(data.get("tone", 3.0))
-            a = float(data.get("actionability", 3.0))
-            comp = round((g + c + t + a) / 4.0, 2)
-            return {
-                "groundedness": g,
-                "correctness": c,
-                "tone": t,
-                "actionability": a,
-                "composite_score": comp,
-                "reasoning": data.get("reasoning", ""),
-                "judge_source": "gemini_judge"
-            }
-    except Exception:
-        pass
+            try:
+                data = json.loads(clean_json.group(0))
+                g = float(data.get("groundedness", 3.0))
+                c = float(data.get("correctness", 3.0))
+                t = float(data.get("tone", 3.0))
+                a = float(data.get("actionability", 3.0))
+                comp = round((g + c + t + a) / 4.0, 2)
+                return {
+                    "groundedness": g,
+                    "correctness": c,
+                    "tone": t,
+                    "actionability": a,
+                    "composite_score": comp,
+                    "reasoning": data.get("reasoning", ""),
+                    "judge_source": "gemini_judge"
+                }
+            except Exception:
+                pass
 
+    if last_err:
+        print(f"[Judge API Exception]: {last_err}")
     return evaluate_reply_heuristic(customer_text, draft_reply, reference_resolution, intent)
 
 def judge_reply(

@@ -35,9 +35,12 @@ python cli.py run --text "my psn account got banned for no reason"
 **Output:**
 ```
 Intent:         account_ban_suspension
-Grounded reply: Hello. Account and console suspensions are issued by the PlayStation Safety team following a thorough review of Code of Conduct violations. These decisions cannot be overturned via Twitter. Please check your registered email for details or visit playstation.com/safety.
+Grounded reply: @AskPlayStation Sorry to hear about this. Please check the email address associated
+                with your account for details regarding the suspension. You can also find more
+                information here: https://www.playstation.com/support/account/psn-suspension-info/
 Decision:       ESCALATE
-Reason:         Account and console suspensions involve Trust & Safety policy enforcement and cannot be automated; requires human safety team review.
+Reason:         Account and console suspensions involve Trust & Safety policy enforcement and
+                cannot be automated; requires human safety team review.
 ```
 
 ### 4. Reproduce the Full 3-Way Benchmark
@@ -53,19 +56,19 @@ python cli.py eval
 
 | Metric Dimension | Full Pipeline | Simple Baseline (Kwd + Retr) | Trivial Baseline (Majority) |
 |---|:---:|:---:|:---:|
-| **Intent Classification Accuracy** | **93.3%** | 93.3% | 10.6% |
-| **Composite Quality Score (1–5)** | **4.28** | 3.41 | 4.00 |
-| — *Groundedness (1–5)* | **4.50** | 3.12 | 4.50 |
-| — *Technical Correctness (1–5)* | **4.12** | 3.19 | 3.00 |
-| — *PlayStation Tone (1–5)* | **4.00** | 3.44 | 4.00 |
-| — *Actionability (1–5)* | **4.50** | 3.90 | 4.50 |
-| **Escalation Precision** | 61.3% | **100.0%** | 0.0% |
+| **Intent Classification Accuracy** | 69.4% | **93.3%** | 10.6% |
+| **Composite Quality Score (1–5)** | **3.88** | 3.41 | 4.00 |
+| — *Groundedness (1–5)* | **4.06** | 3.12 | 4.50 |
+| — *Technical Correctness (1–5)* | **3.45** | 3.19 | 3.00 |
+| — *PlayStation Tone (1–5)* | **4.51** | 3.44 | 4.00 |
+| — *Actionability (1–5)* | 3.50 | **3.90** | 4.50 |
+| **Escalation Precision** | **100.0%** | **100.0%** | 0.0% |
 | **Escalation Recall** | **100.0%** | 86.8% | 0.0% |
 | **False Auto-Handles (Unsafe Leaks)** | **0** | 5 | 38 |
-| **False Escalations (Alarms)** | 24 | **0** | **0** |
-| **Total Asymmetric Loss ($5\times\text{FN} + 1\times\text{FP}$)** | **24.0** | 25.0 | 190.0 |
-| **Loss per Query** | **0.133** | 0.139 | 1.056 |
-| **Evaluation Time** | **< 1s** | < 1s | < 1s |
+| **False Escalations (Alarms)** | **0** | **0** | **0** |
+| **Total Asymmetric Loss ($5\times\text{FN} + 1\times\text{FP}$)** | **0.0** | 25.0 | 190.0 |
+| **Loss per Query** | **0.000** | 0.139 | 1.056 |
+| **Evaluation Time** | ~21 min (LLM) | ~21 min (LLM) | < 1s |
 
 > [!IMPORTANT]
 > **What is misleading about our headline metric?** Read our mandatory critical self-interrogation in [report/REPORT.md](report/REPORT.md), analyzing our conservative escalation bias, class imbalance effects, and human-vs-judge calibration divergence.

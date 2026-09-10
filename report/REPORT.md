@@ -32,19 +32,19 @@ We evaluated three architectures across our **180-example stratified Golden Eval
 
 | Metric Dimension | Full Pipeline | Simple Baseline (Kwd + Retr) | Trivial Baseline (Majority) |
 |---|:---:|:---:|:---:|
-| **Intent Classification Accuracy** | **93.3%** | 93.3% | 10.6% |
-| **Composite Quality Score (1–5)** | **4.28** | 3.41 | 4.00 |
-| — *Groundedness (1–5)* | **4.50** | 3.12 | 4.50 |
-| — *Technical Correctness (1–5)* | **4.12** | 3.19 | 3.00 |
-| — *Brand Tone (1–5)* | **4.00** | 3.44 | 4.00 |
-| — *Actionability (1–5)* | **4.50** | 3.90 | 4.50 |
-| **Escalation Precision** | 61.3% | **100.0%** | 0.0% |
+| **Intent Classification Accuracy** | 69.4% | **93.3%** | 10.6% |
+| **Composite Quality Score (1–5)** | **3.88** | 3.41 | 4.00 |
+| — *Groundedness (1–5)* | **4.06** | 3.12 | 4.50 |
+| — *Technical Correctness (1–5)* | **3.45** | 3.19 | 3.00 |
+| — *Brand Tone (1–5)* | **4.51** | 3.44 | 4.00 |
+| — *Actionability (1–5)* | 3.50 | **3.90** | 4.50 |
+| **Escalation Precision** | **100.0%** | **100.0%** | 0.0% |
 | **Escalation Recall** | **100.0%** | 86.8% | 0.0% |
 | **False Auto-Handles (Unsafe Leaks)** | **0** | 5 | 38 |
-| **False Escalations (Alarms)** | 24 | **0** | **0** |
-| **Total Asymmetric Loss ($5 \times \text{FN} + 1 \times \text{FP}$)** | **24.0** | 25.0 | 190.0 |
-| **Loss per Query** | **0.133** | 0.139 | 1.056 |
-| **Execution Latency per Query** | **< 2 ms** | < 2 ms | < 1 ms |
+| **False Escalations (Alarms)** | **0** | **0** | **0** |
+| **Total Asymmetric Loss ($5 \times \text{FN} + 1 \times \text{FP}$)** | **0.0** | 25.0 | 190.0 |
+| **Loss per Query** | **0.000** | 0.139 | 1.056 |
+| **Execution Latency per Query** | ~7s (LLM) | ~7s (LLM) | < 1ms |
 
 ### Narrative Analysis: Where the System Wins and Where It Struggles
 - **Why the Full Pipeline Beats the Simple Baseline on Quality (4.28 vs. 3.41)**:  
@@ -53,13 +53,13 @@ We evaluated three architectures across our **180-example stratified Golden Eval
   The Simple Baseline achieved 100% precision on escalations but leaked **5 critical escalations** (86.8% recall), including ban disputes and wallet code failures. In contrast, the Full Pipeline achieved **100% Escalate Recall (0 missed escalations)**. It traded off precision (61.3%), incurring 24 false escalations on ambiguous queries. Under our asymmetric business cost model ($5\times$ penalty for missed escalations), the Full Pipeline achieves the lowest overall loss.
 
 ### Per-Class Intent Accuracy Breakdown (Full Pipeline)
-- `account_access_recovery`: **100.0%** ($n=30$)
-- `account_ban_suspension`: **100.0%** ($n=25$)
-- `hardware_system_crash`: **100.0%** ($n=25$)
-- `general_inquiry_other`: **100.0%** ($n=19$)
-- `billing_refund_subscription`: **95.8%** ($n=24$)
-- `network_outage_connection`: **83.9%** ($n=31$)
-- `game_content_redemption`: **76.9%** ($n=26$)
+- `account_access_recovery`: **86.7%** ($n=30$)
+- `account_ban_suspension`: **80.0%** ($n=25$)
+- `billing_refund_subscription`: **66.7%** ($n=24$)
+- `game_content_redemption`: **73.1%** ($n=26$)
+- `general_inquiry_other`: **15.8%** ($n=19$) ⚠️ Weakest class
+- `hardware_system_crash`: **80.0%** ($n=25$)
+- `network_outage_connection`: **67.7%** ($n=31$)
 
 ---
 
@@ -109,8 +109,8 @@ Our headline metric is **93.3% Intent Accuracy** and **0 False Auto-Handles (100
 ### 1. The Benchmark Is Protected by a Conservative Escalation Bias
 The 100% Escalate Recall was achieved by accepting a 61.3% Escalation Precision (24 false escalations out of 62 total escalations). In an actual enterprise call center, a 38.7% false alarm rate would cause queue congestion and human agent fatigue. In this benchmark, our metric looks flawless on safety specifically because we tuned the system to "dump" uncertain queries onto human agents.
 
-### 2. Lexical Leakage and Intent Conflation in Easy Classes
-Three intent classes (`account_access_recovery`, `account_ban_suspension`, and `hardware_system_crash`) scored a perfect 100.0% accuracy. This is partly an artifact of high lexical exclusivity in gaming support: customers rarely use words like "banned" or "safe mode" in any context other than bans or crashes. The headline 93.3% metric is propped up by these straightforward classes, masking the true operational struggle on the boundary between `game_content_redemption` (76.9%) and `billing_refund_subscription` (95.8%).
+### 2. Model Fallback Degradation on Intent Classification
+The current model retry list (`gemini-3.1-flash-lite`, `gemini-3.1-flash-lite-preview`, etc.) achieves only **69.4% intent accuracy** compared to 93.3% from the original `gemini-3.6-flash` benchmark run. The drop is most severe on `general_inquiry_other` (15.8%) — a catch-all class where lighter models tend to over-classify ambiguous queries into more specific intents. The headline 69.4% is the honest live-model result. Setting `GEMINI_MODEL=gemini-3.6-flash` in `.env` reproduces the original 93.3%.
 
 ### 3. Judge Calibration Bias (Central Tendency & Leniency)
 Our human-vs-judge calibration study on 35 examples revealed a Cohen's Kappa of 0.16 and a 40% exact tier agreement. The automated judge exhibits a distinct **central tendency bias**: it clusters ratings between 3.0 and 3.8. It rarely gives a 1.0 to dangerous advice (e.g. asking for passwords) unless explicitly instructed, and it penalizes concise, single-sentence replies on the Actionability subscale. The headline composite quality score of 4.28 may therefore overestimate the perceived quality of shorter answers.

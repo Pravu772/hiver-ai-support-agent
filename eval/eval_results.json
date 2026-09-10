@@ -1,58 +1,58 @@
 {
   "metadata": {
     "eval_size": 180,
-    "timestamp": "2026-09-10 09:58:44",
-    "elapsed_seconds": 0.85
+    "timestamp": "2026-09-10 15:00:26",
+    "elapsed_seconds": 1253.76
   },
   "comparison_table": {
     "Full Pipeline": {
-      "intent_accuracy": 93.3,
+      "intent_accuracy": 69.4,
       "class_breakdown": {
         "account_access_recovery": {
           "count": 30,
-          "accuracy": 100.0
+          "accuracy": 86.7
         },
         "account_ban_suspension": {
           "count": 25,
-          "accuracy": 100.0
+          "accuracy": 80.0
         },
         "billing_refund_subscription": {
           "count": 24,
-          "accuracy": 95.8
+          "accuracy": 66.7
         },
         "game_content_redemption": {
           "count": 26,
-          "accuracy": 76.9
+          "accuracy": 73.1
         },
         "general_inquiry_other": {
           "count": 19,
-          "accuracy": 100.0
+          "accuracy": 15.8
         },
         "hardware_system_crash": {
           "count": 25,
-          "accuracy": 100.0
+          "accuracy": 80.0
         },
         "network_outage_connection": {
           "count": 31,
-          "accuracy": 83.9
+          "accuracy": 67.7
         }
       },
-      "quality_groundedness": 4.5,
-      "quality_correctness": 4.12,
-      "quality_tone": 4.0,
-      "quality_actionability": 4.5,
-      "quality_composite": 4.28,
+      "quality_groundedness": 4.06,
+      "quality_correctness": 3.45,
+      "quality_tone": 4.51,
+      "quality_actionability": 3.5,
+      "quality_composite": 3.88,
       "routing": {
-        "escalate_precision": 61.3,
+        "escalate_precision": 100.0,
         "escalate_recall": 100.0,
-        "escalate_f1": 76.0,
+        "escalate_f1": 100.0,
         "auto_precision": 100.0,
-        "auto_recall": 83.1,
-        "auto_f1": 90.8,
+        "auto_recall": 100.0,
+        "auto_f1": 100.0,
         "false_auto_handles": 0,
-        "false_escalations": 24,
-        "asymmetric_cost_total": 24.0,
-        "asymmetric_cost_per_query": 0.133
+        "false_escalations": 0,
+        "asymmetric_cost_total": 0.0,
+        "asymmetric_cost_per_query": 0.0
       }
     },
     "Simple Baseline": {
@@ -156,17 +156,362 @@
       }
     }
   },
+  "sample_evaluations": [
+    {
+      "example_id": "eval_001",
+      "customer_text": "I had to change my password because I forgot my old one when I tried signing into the app, but it's not accepting my new password when I got signed out on my PS4 for some reason",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "Hi there. That sounds frustrating. Please follow us so we can send you a DM with further instructions to help you regain access to your account. Thanks!",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 4.0,
+        "tone": 5.0,
+        "actionability": 3.0,
+        "composite": 4.25
+      },
+      "judge_reasoning": "The reply follows standard social support protocols for account security, but it lacks immediate self-service resources like the official password reset link. While professional and safe, it forces the user to wait for a DM rather than providing the direct, actionable link to resolve the issue."
+    },
+    {
+      "example_id": "eval_002",
+      "customer_text": "I forgot my password and somehow changed my accout email address and don’t know how to get it back and I tried to reset it",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "@AskPlayStation No worries! Please follow us so we can send you a Direct Message with further instructions to help you recover your account.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 5.0
+      },
+      "judge_reasoning": "The response follows standard PlayStation Support protocol for account recovery by moving the conversation to a secure Direct Message. It is professional, concise, and provides a clear, actionable next step for the user."
+    },
+    {
+      "example_id": "eval_003",
+      "customer_text": "I cant remember the year I put for my birthdate I put a random year and i can't reset my password",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "Hi there. We’d like to look into this for you. Please make sure you are following us, then let us know once you have so we can assist you further via Direct Message.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 5.0
+      },
+      "judge_reasoning": "The response follows the standard PlayStation Support protocol for handling account security issues by moving the conversation to a private channel. It is professional, accurate to brand guidelines, and provides a clear, actionable next step for the user."
+    },
+    {
+      "example_id": "eval_004",
+      "customer_text": "I can't sign in on my mobile app. This error keeps popping up. What does this mean? https://t.co/iUhAix6SQH",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "We’re sorry to hear you're having trouble signing in. Please try the troubleshooting steps for this error code here: https://www.playstation.com/support/error-codes/ If the issue persists, please let us know!",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 3.0,
+        "correctness": 3.0,
+        "tone": 4.0,
+        "actionability": 3.0,
+        "composite": 3.25
+      },
+      "judge_reasoning": "The reply provides a valid official link but fails to address the specific account recovery intent or provide the direct password reset guidance recommended in the historical reference. It places the burden on the customer to search for their error code rather than offering immediate, targeted assistance for their sign-in issue."
+    },
+    {
+      "example_id": "eval_005",
+      "customer_text": "I lost my email account, so can't access to the link to reset my password. 😤",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "@AskPlayStation Hello! We’re sorry to hear you’re having trouble accessing your account. Please follow us so we can send you a DM with further instructions to assist you. Thanks!",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 5.0
+      },
+      "judge_reasoning": "The response follows the standard PlayStation Support protocol for account recovery by initiating a private conversation to verify identity securely. It is professional, concise, and provides a clear, actionable path for the user to resolve their issue."
+    },
+    {
+      "example_id": "eval_006",
+      "customer_text": "hello,I got an email to change my password without me asking and when I want to do it tells me that my account doesn't exist",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "@AskPlayStation Hello! We are here to help. Please make sure you are following us so we can assist you further via Direct Message.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 2.0,
+        "correctness": 2.0,
+        "tone": 4.0,
+        "actionability": 2.0,
+        "composite": 2.5
+      },
+      "judge_reasoning": "The draft fails to provide the official recovery links or address the specific 'account doesn't exist' symptom, which often indicates an unauthorized email change. While the tone is professional and the DM request is standard for privacy, it leaves the user without immediate technical guidance or self-service options."
+    },
+    {
+      "example_id": "eval_007",
+      "customer_text": "I need help I was hacked come on",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "ESCALATE",
+      "grounded_reply": "@338059 We're sorry to hear this. We have sent you a DM with more details to help you secure your account.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 5.0
+      },
+      "judge_reasoning": "The response follows the official protocol for account compromise by initiating a secure, private channel for identity verification. It is concise, professional, and provides the necessary immediate next step for the user."
+    },
+    {
+      "example_id": "eval_008",
+      "customer_text": "Why do you make me change my password every other day????",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "@AskPlayStation Hi there. Let's look into that. It's for extra security measures. If you received a prompt to change your password, please do so.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 4.0,
+        "correctness": 3.0,
+        "tone": 4.0,
+        "actionability": 2.0,
+        "composite": 3.25
+      },
+      "judge_reasoning": "The reply is grounded in security policy but fails to provide the necessary official link for the user to perform the action safely. It lacks specific technical guidance on why the user might be experiencing frequent prompts, such as checking for unauthorized access or 2FA settings."
+    },
+    {
+      "example_id": "eval_009",
+      "customer_text": "got hacked on CoD: MW3. any help appreciated",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "ESCALATE",
+      "grounded_reply": "@AskPlayStation Hi there! We're so sorry to hear that happened. For account security issues, please check out our guide here: https://t.co/vT0D2O1hPF We have also sent you a Direct Message with further instructions to help secure your account.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 5.0
+      },
+      "judge_reasoning": "The reply follows official PlayStation protocol for account compromise by directing the user to the secure support portal and initiating a private DM for identity verification. It maintains a professional, empathetic tone while providing clear, actionable steps to resolve the security issue."
+    },
+    {
+      "example_id": "eval_010",
+      "customer_text": "Can't access my account, tells me i need to reset password, can't reset password because my questions have been changed.",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "@AskPlayStation Hello! We’re sorry to hear you’re having trouble accessing your account. Please follow us so we can send you a DM with further instructions to assist you.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 4.0,
+        "composite": 4.75
+      },
+      "judge_reasoning": "The response follows standard PlayStation Support protocol for account security issues by moving the conversation to a private channel. While it is highly professional and accurate, it requires an extra step for the user to follow the account before assistance can begin."
+    },
+    {
+      "example_id": "eval_011",
+      "customer_text": "Hello PlayStation​ I need your help\nPlease\n I forget  my ID  password    \nand the  birth date   :(\nplease help me :(",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "@AskPlayStation Hi there! We’re sorry to hear you’re having trouble accessing your account. Please follow us so we can send you a DM with further instructions on how to recover your account details. Thanks!",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 5.0
+      },
+      "judge_reasoning": "The response follows standard PlayStation Support protocol for account recovery by initiating a secure DM process. It is professional, empathetic, and provides a clear, actionable path for the user to resolve their issue securely."
+    },
+    {
+      "example_id": "eval_012",
+      "customer_text": "hey i think my acc has been hacked. i type in the verification code that i recieve on my phone number and it says error",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "ESCALATE",
+      "grounded_reply": "@AskPlayStation We are sorry to hear you're having trouble accessing your account. Please check your Direct Messages for further instructions on how we can assist you with this.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 5.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 5.0
+      },
+      "judge_reasoning": "The response correctly identifies the need for a secure, private escalation for account compromise issues. It follows official support protocols by directing the user to DMs for identity verification, maintaining a professional and helpful brand voice."
+    },
+    {
+      "example_id": "eval_013",
+      "customer_text": "Hey i cant access my online storage om my ps4. Its stuck at a ‘please wait’ screen. I waited for 15 minutes, nothing changed. What can i do?",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "network_outage_connection",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "Hi there! We're sorry to hear you're having trouble accessing your online storage. Please try starting your console in Safe Mode and selecting \"Rebuild Database\" to see if that resolves the issue: https://www.playstation.com/support/hardware/safe-mode-playstation/",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 5.0,
+        "correctness": 4.0,
+        "tone": 5.0,
+        "actionability": 5.0,
+        "composite": 4.75
+      },
+      "judge_reasoning": "The response provides accurate, official troubleshooting steps for a console hang issue and maintains a professional brand voice. While the historical reference suggested password/2FA steps, the AI correctly identified that a 'please wait' hang is a database/system issue rather than an account authentication error."
+    },
+    {
+      "example_id": "eval_014",
+      "customer_text": "I can't sign into my sub account nor can I add it to the Family Management.",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "AUTO_HANDLE",
+      "grounded_reply": "@AskPlayStation Sorry for the inconvenience. Please follow us so we can send you a DM with further instructions. Thanks!",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 3.0,
+        "correctness": 2.0,
+        "tone": 3.0,
+        "actionability": 2.0,
+        "composite": 2.5
+      },
+      "judge_reasoning": "The draft relies on a standard deflection to DMs instead of addressing the specific account access and family management issue with official resolution steps. While polite, it lacks concrete troubleshooting guidance and fails to provide the required password reset or account recovery resources."
+    },
+    {
+      "example_id": "eval_015",
+      "customer_text": "#psnuk @AskPlayStation I think I've had my account hacked or tampered with. Any help please?",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "account_access_recovery",
+      "pred_decision": "ESCALATE",
+      "grounded_reply": "@365662 Hi there. Sorry to hear that. Please make sure you are following us, so we can assist you better via a Direct Message.",
+      "judge_source": "gemini_judge",
+      "judge_scores": {
+        "groundedness": 3.0,
+        "correctness": 2.0,
+        "tone": 4.0,
+        "actionability": 2.0,
+        "composite": 2.75
+      },
+      "judge_reasoning": "The response is polite and empathetic, but it fails to provide the specific secure support link required for account recovery as per official protocols. By requesting a DM instead of directing the user to the identity verification portal, it delays the resolution of a high-priority security issue."
+    }
+  ],
   "sample_failures": [
     {
-      "example_id": "eval_056",
-      "customer_text": "So I recently purchased the Battlefield Premium for PS4 and when I went to play the game my maps and premium items were and still are not",
-      "true_intent": "game_content_redemption",
-      "pred_intent": "billing_refund_subscription",
+      "example_id": "eval_013",
+      "customer_text": "Hey i cant access my online storage om my ps4. Its stuck at a ‘please wait’ screen. I waited for 15 minutes, nothing changed. What can i do?",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "network_outage_connection",
       "true_decision": "AUTO_HANDLE",
       "pred_decision": "AUTO_HANDLE",
-      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
-      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
-      "historical_reply": "@699206 Not good. Please check the following link for further assistance with your DLC: https://t.co/PR9L0S0kEu"
+      "routing_reason": "Automated network status check (status.playstation.com) and standard router/DNS troubleshooting.",
+      "draft_reply": "Hi there! We're sorry to hear you're having trouble accessing your online storage. Please try starting your console in Safe Mode and selecting \"Rebuild Database\" to see if that resolves the issue: https://www.playstation.com/support/hardware/safe-mode-playstation/",
+      "historical_reply": "@451337 Hi Robert! Please start your system in safe mode and rebuild the database: https://t.co/NiCy6x1mm2 then try again."
+    },
+    {
+      "example_id": "eval_026",
+      "customer_text": "why when I test my connection on PS4 is says failed on playstation network sign in, and everything else is successful",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "network_outage_connection",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Automated network status check (status.playstation.com) and standard router/DNS troubleshooting.",
+      "draft_reply": "@AskPlayStation Sorry to hear you're having trouble connecting. Please power cycle your console and network devices by unplugging them for 3 minutes, then try again. You can also check the status of our services here: https://status.playstation.com. Let us know if it persists!",
+      "historical_reply": "@250131 Thank you for clarify, Disconnect your console from the power source  3 minutes, reconnect it try again. Any problems let us know."
+    },
+    {
+      "example_id": "eval_027",
+      "customer_text": "I have error code NW-31194-8 it will not let me connect to the internet I’ve reset the router multiple times nothing has worked. Please help",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "network_outage_connection",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Automated network status check (status.playstation.com) and standard router/DNS troubleshooting.",
+      "draft_reply": "@AskPlayStation Hi there. We're sorry to hear you're having trouble connecting. Please try entering Safe Mode and selecting option 4, \"Restore Default Settings,\" then set up your network connection again. You can find the steps here: https://www.playstation.com/support/hardware/safe-mode-playstation/",
+      "historical_reply": "@235194 Very sorry for the late reply. If the issue continue, please try safe mode option 4 Restore Default Settings, and set up the connection again: https://t.co/OOaq76kzAA"
+    },
+    {
+      "example_id": "eval_028",
+      "customer_text": "can u guys help me plz, i cant acces psn store for my ps4, just for my app. i reset my moden, ps4 everting, but still nothin",
+      "true_intent": "account_access_recovery",
+      "pred_intent": "network_outage_connection",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Automated network status check (status.playstation.com) and standard router/DNS troubleshooting.",
+      "draft_reply": "@AskPlayStation Sorry to hear you're having trouble accessing the PS Store. Please try rebuilding your PS4 database to see if that resolves the connection issue. You can find the steps here: https://t.co/OOaq76kzAA",
+      "historical_reply": "@211693 Sorry to hear that. Please try rebuilding the database. Follow the steps on the next article: https://t.co/OOaq76kzAA"
+    },
+    {
+      "example_id": "eval_032",
+      "customer_text": "me acaban de hackear mi cuenta como puedo solucionarlo? AYUDA POR FAVOR!!\nEl servicio al cliente por chat no esta funcionando!!",
+      "true_intent": "account_ban_suspension",
+      "pred_intent": "account_access_recovery",
+      "true_decision": "ESCALATE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Account and console suspensions involve Trust & Safety policy enforcement and cannot be automated; requires human safety team review.",
+      "draft_reply": "@116216 Hola. Lamento mucho la situación con tu cuenta. Por favor, síguenos para poder enviarte un mensaje directo con los pasos a seguir para recuperarla lo antes posible.",
+      "historical_reply": "@731287 Un gusto ayudarte! Porfavor siguenos y hazlo saber para poder enviarte mas informacion por Mensajes Directos."
+    },
+    {
+      "example_id": "eval_035",
+      "customer_text": "my ps plus auto renewed and I was wondering if I could get a refund to my bank account?",
+      "true_intent": "account_ban_suspension",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "ESCALATE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Account and console suspensions involve Trust & Safety policy enforcement and cannot be automated; requires human safety team review.",
+      "draft_reply": "@519927 Sure we can assist. Please check the following article with more information about requesting a refund: https://t.co/UYBWwze3ZK",
+      "historical_reply": "@519927 For assistance please follow us and send us a Direct Message, we look forward to your reply."
+    },
+    {
+      "example_id": "eval_042",
+      "customer_text": "I have followed all instructions, and even had a live chat. Despite paypal and my card being to separate banks you said was bank's fault.",
+      "true_intent": "account_ban_suspension",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "ESCALATE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Account and console suspensions involve Trust & Safety policy enforcement and cannot be automated; requires human safety team review.",
+      "draft_reply": "@188071 Sorry for the frustration. We have sent you a direct message.",
+      "historical_reply": "@188071 Sorry for the frustration. We have sent you a direct message."
+    },
+    {
+      "example_id": "eval_043",
+      "customer_text": "Aconteceu algo estranho no meu console. Coloquei um DVD de uma série, porém na hora de ejetar o disco ele não quis sair logo de primeira, ficou travado na bandeja. Depois que pressionei o botão ejetar várias vezes foi que ele saiu. O que pode ter acontecido?",
+      "true_intent": "account_ban_suspension",
+      "pred_intent": "hardware_system_crash",
+      "true_decision": "ESCALATE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Account and console suspensions involve Trust & Safety policy enforcement and cannot be automated; requires human safety team review.",
+      "draft_reply": "@121984 Oi Levy! Lamentamos saber disso, casso volte acontecer recomendamos realizar o seguinte procedimento: https://t.co/zK95n2P5fW",
+      "historical_reply": "@802100 Oi Levy! Lamentamos saber isso, casso volte acontecer recomendamos realizar o seguinte procedimento: https://t.co/zK95n2P5fW"
+    },
+    {
+      "example_id": "eval_051",
+      "customer_text": "não consigo mais fazer compras na PSN com nenhum de meus cartões de crédito. O problema não é o banco. Onde consigo ajuda?",
+      "true_intent": "account_ban_suspension",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "ESCALATE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Account and console suspensions involve Trust & Safety policy enforcement and cannot be automated; requires human safety team review.",
+      "draft_reply": "@121984 Oi! Tente cadastrar o cartão de credito seguindo os passos deste link: https://t.co/gOtapEiNtT após isso tente realizar a compra.",
+      "historical_reply": "@473686 Oi! Tente cadastrar o cartão de credito seguindo os passos deste link: https://t.co/gOtapEiNtT após isso tente realizar a compra."
     },
     {
       "example_id": "eval_057",
@@ -176,151 +521,63 @@
       "true_decision": "AUTO_HANDLE",
       "pred_decision": "AUTO_HANDLE",
       "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
-      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
+      "draft_reply": "@AskPlayStation That's odd. Try making the purchase via our website here: https://store.playstation.com/ Keep us posted if you continue to run into issues!",
       "historical_reply": "@140941 That's odd. Try making the purchase via PC: https://t.co/qiQQSTNCQc Keep us posted!"
     },
     {
-      "example_id": "eval_062",
-      "customer_text": "I Used A Pc And It's The Same Problem I Can't Add Funds",
+      "example_id": "eval_059",
+      "customer_text": "i bought a ps plus subscription of 12 month plus 1050 fifa points and did not get the fifa points , i only got the 12 month",
+      "true_intent": "billing_refund_subscription",
+      "pred_intent": "game_content_redemption",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Standard self-service license restoration (Settings > Account Management > Restore Licenses).",
+      "draft_reply": "@AskPlayStation Hi! Let's take a closer look into your missing FIFA points. Please check your DMs for further instructions.",
+      "historical_reply": "@383760 Hi Adam. Let's look into that. Please check your DM's for further instructions."
+    },
+    {
+      "example_id": "eval_061",
+      "customer_text": "tengo una duda hacerca de un cupon de subscripción de 3 meses a PS Plus, compre una consola el dia de hoy y no se cual es el cupon, me podrian ayudar?",
+      "true_intent": "billing_refund_subscription",
+      "pred_intent": "game_content_redemption",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Standard self-service license restoration (Settings > Account Management > Restore Licenses).",
+      "draft_reply": "@116216 ¡Hola! Por favor, revisa el empaque de tu consola o los folletos incluidos en la caja, ya que ahí suele encontrarse el código. Si no lo encuentras, envíanos un mensaje directo para poder asistirte mejor.",
+      "historical_reply": "@480838 Hola Daniel! Por favor revisa tus mensajes directos para asistencia."
+    },
+    {
+      "example_id": "eval_063",
+      "customer_text": "Foi liberado o Until Dawn: Rush of Blood na PS Plus. Mas e a gente aqui do Brasil? Que paga isso do mesmo jeito que os demais países? Somos obrigados a ficar sem? Por que não colocar os jogos de VR na PSN Brasileira também?",
       "true_intent": "billing_refund_subscription",
       "pred_intent": "general_inquiry_other",
       "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@680319 Please follow us via Twitter and let us know so we can send you a DM with further instructions. Thanks!"
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Public product FAQ and general information inquiry.",
+      "draft_reply": "Oi! Lamentamos a frustração. A disponibilidade de conteúdos pode variar de acordo com a região e as especificidades de cada mercado. Recomendamos que fique atento ao nosso Blog oficial para futuras atualizações sobre lançamentos e serviços: https://blog.br.playstation.com/",
+      "historical_reply": "@657358 Oi André! Leve em conta que o PS VR ainda não esta disponível para Brasil, fique atento ao nosso blog: https://t.co/mQnUQxVs59"
     },
     {
-      "example_id": "eval_071",
-      "customer_text": "I bought a code feom gamestop to download the new Call Of Duty but when I go to enter the code it says that its invalid",
-      "true_intent": "game_content_redemption",
-      "pred_intent": "billing_refund_subscription",
+      "example_id": "eval_064",
+      "customer_text": "Hi, I have recently bought 2200 FIFA 18 Points  Pack from PS store, and they have not yet been added to my game.",
+      "true_intent": "billing_refund_subscription",
+      "pred_intent": "game_content_redemption",
       "true_decision": "AUTO_HANDLE",
       "pred_decision": "AUTO_HANDLE",
-      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
-      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
-      "historical_reply": "@463014 Sorry for the inconvenience. Please follow us via Twitter so we can send you a DM with further instructions. Thanks!"
+      "routing_reason": "Standard self-service license restoration (Settings > Account Management > Restore Licenses).",
+      "draft_reply": "@AskPlayStation That’s frustrating. If your content hasn't appeared, please follow the troubleshooting steps in this guide to resolve the issue: https://t.co/d9Gao141KM",
+      "historical_reply": "@379590 That's odd. If the content is still missing please follow the steps in the link and check again: https://t.co/d9Gao141KM"
     },
     {
-      "example_id": "eval_074",
-      "customer_text": "When do we get our discount code for Day 1 Digital purchases? I’ve bought 5 eligible games and no discount code yet.",
-      "true_intent": "game_content_redemption",
-      "pred_intent": "billing_refund_subscription",
+      "example_id": "eval_065",
+      "customer_text": "I purchased rainbow 6 siege year 2 pass and 2 r6 1,200 points and I didn’t receive it",
+      "true_intent": "billing_refund_subscription",
+      "pred_intent": "game_content_redemption",
       "true_decision": "AUTO_HANDLE",
       "pred_decision": "AUTO_HANDLE",
-      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
-      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
-      "historical_reply": "@518951 Hi Denny. We'd be happy to look into that with you. Please check your DM's for further information."
-    },
-    {
-      "example_id": "eval_075",
-      "customer_text": "i have bought dlc diablo 3 necromancer and hav phys disc D3 ROS but when i click necromaner pack on game , dont download https://t.co/JDdn50e0wo",
-      "true_intent": "game_content_redemption",
-      "pred_intent": "billing_refund_subscription",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "AUTO_HANDLE",
-      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
-      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
-      "historical_reply": "@116006 Hi there. Please follow the steps in the next link: https://t.co/PR9L0S0kEu Let us know the outcome!"
-    },
-    {
-      "example_id": "eval_083",
-      "customer_text": "hey i bought a psn wallet top up card and have scratched the code too hard and I am missing 2 letters or numbers can you please help thanks",
-      "true_intent": "game_content_redemption",
-      "pred_intent": "billing_refund_subscription",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "AUTO_HANDLE",
-      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
-      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
-      "historical_reply": "@144574 Hi there. Sorry to hear that. Please make sure you are following us, so we can assist you better via a Direct Message."
-    },
-    {
-      "example_id": "eval_088",
-      "customer_text": "Bom dia, estou jogando Sombras da Guerra e durante o jogo, várias vezes o mesmo fecha dando o erro CE-34878-0, como proceder?",
-      "true_intent": "network_outage_connection",
-      "pred_intent": "general_inquiry_other",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@380199 Boa noite! No seguinte link vai encontrar como solucionar esse código de erro: https://t.co/m4YgP0cQK5"
-    },
-    {
-      "example_id": "eval_100",
-      "customer_text": "how do i solve error ce-34878-0?  so disappointed with playstation. look like many people encounter n u all r doing nothing about it.",
-      "true_intent": "network_outage_connection",
-      "pred_intent": "general_inquiry_other",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@402563 Hello Jason. Let's look into that. Review the next article for further info on error code CE-34878-0: https://t.co/W7AhTUulnd"
-    },
-    {
-      "example_id": "eval_102",
-      "customer_text": "hey there I keep getting a ce-34878-0 seems my ps4 dosnt have enough memory :-/ it crashes on 7 days and fallout 4",
-      "true_intent": "network_outage_connection",
-      "pred_intent": "hardware_system_crash",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "AUTO_HANDLE",
-      "routing_reason": "Standard self-service Safe Mode database rebuild and troubleshooting guidance.",
-      "draft_reply": "Hello! If your console is freezing or looping, try starting in Safe Mode by holding the power button until you hear a second beep, then select Option 4 (Rebuild Database). For hardware repairs, visit https://hardware.support.playstation.com.",
-      "historical_reply": "@413466  Sorry for the inconvenience. please follow the steps in the next link: https://t.co/XCIaKDYqME"
-    },
-    {
-      "example_id": "eval_110",
-      "customer_text": "I have an error CE-35694-7 I don't know what that is",
-      "true_intent": "network_outage_connection",
-      "pred_intent": "general_inquiry_other",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@196440 Hey Alex. What you were doing in the console when you got this error code? \nPlease provide us more details"
-    },
-    {
-      "example_id": "eval_161",
-      "customer_text": "why is my speeds so slow when my phone gets 50/mbps constantly? How can this be improved? https://t.co/b5syp2877W",
-      "true_intent": "network_outage_connection",
-      "pred_intent": "general_inquiry_other",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@444593 Let's check out the next article for steps on how to improve the network connection:  https://t.co/zDkTYZPxlr"
-    },
-    {
-      "example_id": "eval_162",
-      "customer_text": "why do I keep getting ignored when trying to ask for help?",
-      "true_intent": "general_inquiry_other",
-      "pred_intent": "general_inquiry_other",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@244691 Sorry for the delay. Please provide us more details of the issue that you are having."
-    },
-    {
-      "example_id": "eval_163",
-      "customer_text": "Black Friday sale PS+ Early access. Will there be better black Friday deals on black friday? Yes, No, No Comment?",
-      "true_intent": "general_inquiry_other",
-      "pred_intent": "general_inquiry_other",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@688168 Hi! You can keep checking our discounts here: https://t.co/qiQQSTNCQc"
-    },
-    {
-      "example_id": "eval_164",
-      "customer_text": "hi. My ps4 keeps swithin itself off mid game. And switches itself on sometimes as well. How do I fix? Thanks.",
-      "true_intent": "general_inquiry_other",
-      "pred_intent": "general_inquiry_other",
-      "true_decision": "AUTO_HANDLE",
-      "pred_decision": "ESCALATE",
-      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
-      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
-      "historical_reply": "@297259 That's odd! Try going in Safe mode and reset default settings. Here is a link to show you how. https://t.co/NiCy6xiXKC"
+      "routing_reason": "Standard self-service license restoration (Settings > Account Management > Restore Licenses).",
+      "draft_reply": "@AskPlayStation Sorry to hear you haven't received your content. Please try restoring your licenses to see if that resolves the issue: https://t.co/WATnmgS37Z. If the content still doesn't appear, please let us know!",
+      "historical_reply": "@491629 Sorry for the delay. Please restore licenses and check again. Steps here: https://t.co/WATnmgS37Z"
     }
   ]
 }
