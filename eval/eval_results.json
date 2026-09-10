@@ -1,0 +1,326 @@
+{
+  "metadata": {
+    "eval_size": 180,
+    "timestamp": "2026-09-10 09:45:55",
+    "elapsed_seconds": 0.49
+  },
+  "comparison_table": {
+    "Full Pipeline": {
+      "intent_accuracy": 93.3,
+      "class_breakdown": {
+        "account_access_recovery": {
+          "count": 30,
+          "accuracy": 100.0
+        },
+        "account_ban_suspension": {
+          "count": 25,
+          "accuracy": 100.0
+        },
+        "billing_refund_subscription": {
+          "count": 24,
+          "accuracy": 95.8
+        },
+        "game_content_redemption": {
+          "count": 26,
+          "accuracy": 76.9
+        },
+        "general_inquiry_other": {
+          "count": 19,
+          "accuracy": 100.0
+        },
+        "hardware_system_crash": {
+          "count": 25,
+          "accuracy": 100.0
+        },
+        "network_outage_connection": {
+          "count": 31,
+          "accuracy": 83.9
+        }
+      },
+      "quality_groundedness": 4.5,
+      "quality_correctness": 4.12,
+      "quality_tone": 4.0,
+      "quality_actionability": 4.5,
+      "quality_composite": 4.28,
+      "routing": {
+        "escalate_precision": 61.3,
+        "escalate_recall": 100.0,
+        "escalate_f1": 76.0,
+        "auto_precision": 100.0,
+        "auto_recall": 83.1,
+        "auto_f1": 90.8,
+        "false_auto_handles": 0,
+        "false_escalations": 24,
+        "asymmetric_cost_total": 24.0,
+        "asymmetric_cost_per_query": 0.133
+      }
+    },
+    "Simple Baseline": {
+      "intent_accuracy": 93.3,
+      "class_breakdown": {
+        "account_access_recovery": {
+          "count": 30,
+          "accuracy": 100.0
+        },
+        "account_ban_suspension": {
+          "count": 25,
+          "accuracy": 100.0
+        },
+        "billing_refund_subscription": {
+          "count": 24,
+          "accuracy": 95.8
+        },
+        "game_content_redemption": {
+          "count": 26,
+          "accuracy": 76.9
+        },
+        "general_inquiry_other": {
+          "count": 19,
+          "accuracy": 100.0
+        },
+        "hardware_system_crash": {
+          "count": 25,
+          "accuracy": 100.0
+        },
+        "network_outage_connection": {
+          "count": 31,
+          "accuracy": 83.9
+        }
+      },
+      "quality_groundedness": 3.12,
+      "quality_correctness": 3.19,
+      "quality_tone": 3.44,
+      "quality_actionability": 3.9,
+      "quality_composite": 3.41,
+      "routing": {
+        "escalate_precision": 100.0,
+        "escalate_recall": 86.8,
+        "escalate_f1": 93.0,
+        "auto_precision": 96.6,
+        "auto_recall": 100.0,
+        "auto_f1": 98.3,
+        "false_auto_handles": 5,
+        "false_escalations": 0,
+        "asymmetric_cost_total": 25.0,
+        "asymmetric_cost_per_query": 0.139
+      }
+    },
+    "Trivial Baseline": {
+      "intent_accuracy": 10.6,
+      "class_breakdown": {
+        "account_access_recovery": {
+          "count": 30,
+          "accuracy": 0.0
+        },
+        "account_ban_suspension": {
+          "count": 25,
+          "accuracy": 0.0
+        },
+        "billing_refund_subscription": {
+          "count": 24,
+          "accuracy": 0.0
+        },
+        "game_content_redemption": {
+          "count": 26,
+          "accuracy": 0.0
+        },
+        "general_inquiry_other": {
+          "count": 19,
+          "accuracy": 100.0
+        },
+        "hardware_system_crash": {
+          "count": 25,
+          "accuracy": 0.0
+        },
+        "network_outage_connection": {
+          "count": 31,
+          "accuracy": 0.0
+        }
+      },
+      "quality_groundedness": 4.5,
+      "quality_correctness": 3.0,
+      "quality_tone": 4.0,
+      "quality_actionability": 4.5,
+      "quality_composite": 4.0,
+      "routing": {
+        "escalate_precision": 0.0,
+        "escalate_recall": 0.0,
+        "escalate_f1": 0.0,
+        "auto_precision": 78.9,
+        "auto_recall": 100.0,
+        "auto_f1": 88.2,
+        "false_auto_handles": 38,
+        "false_escalations": 0,
+        "asymmetric_cost_total": 190.0,
+        "asymmetric_cost_per_query": 1.056
+      }
+    }
+  },
+  "sample_failures": [
+    {
+      "example_id": "eval_056",
+      "customer_text": "So I recently purchased the Battlefield Premium for PS4 and when I went to play the game my maps and premium items were and still are not",
+      "true_intent": "game_content_redemption",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
+      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
+      "historical_reply": "@699206 Not good. Please check the following link for further assistance with your DLC: https://t.co/PR9L0S0kEu"
+    },
+    {
+      "example_id": "eval_057",
+      "customer_text": "hi i was buying a season pass for R6s but received the error code 8200012C. The card information is correct i have recently purchased the ps plus 1 year subscription.",
+      "true_intent": "game_content_redemption",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
+      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
+      "historical_reply": "@140941 That's odd. Try making the purchase via PC: https://t.co/qiQQSTNCQc Keep us posted!"
+    },
+    {
+      "example_id": "eval_062",
+      "customer_text": "I Used A Pc And It's The Same Problem I Can't Add Funds",
+      "true_intent": "billing_refund_subscription",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@680319 Please follow us via Twitter and let us know so we can send you a DM with further instructions. Thanks!"
+    },
+    {
+      "example_id": "eval_071",
+      "customer_text": "I bought a code feom gamestop to download the new Call Of Duty but when I go to enter the code it says that its invalid",
+      "true_intent": "game_content_redemption",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
+      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
+      "historical_reply": "@463014 Sorry for the inconvenience. Please follow us via Twitter so we can send you a DM with further instructions. Thanks!"
+    },
+    {
+      "example_id": "eval_074",
+      "customer_text": "When do we get our discount code for Day 1 Digital purchases? I’ve bought 5 eligible games and no discount code yet.",
+      "true_intent": "game_content_redemption",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
+      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
+      "historical_reply": "@518951 Hi Denny. We'd be happy to look into that with you. Please check your DM's for further information."
+    },
+    {
+      "example_id": "eval_075",
+      "customer_text": "i have bought dlc diablo 3 necromancer and hav phys disc D3 ROS but when i click necromaner pack on game , dont download https://t.co/JDdn50e0wo",
+      "true_intent": "game_content_redemption",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
+      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
+      "historical_reply": "@116006 Hi there. Please follow the steps in the next link: https://t.co/PR9L0S0kEu Let us know the outcome!"
+    },
+    {
+      "example_id": "eval_083",
+      "customer_text": "hey i bought a psn wallet top up card and have scratched the code too hard and I am missing 2 letters or numbers can you please help thanks",
+      "true_intent": "game_content_redemption",
+      "pred_intent": "billing_refund_subscription",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Self-service subscription management and auto-renewal toggle instructions.",
+      "draft_reply": "Hello! For refund requests on digital PlayStation Store purchases or subscriptions, please review our cancellation policy and submit a request at https://www.playstation.com/support/store/refunds/. To manage auto-renew, go to Settings > Account Management > Account Information > PlayStation Subscriptions.",
+      "historical_reply": "@144574 Hi there. Sorry to hear that. Please make sure you are following us, so we can assist you better via a Direct Message."
+    },
+    {
+      "example_id": "eval_088",
+      "customer_text": "Bom dia, estou jogando Sombras da Guerra e durante o jogo, várias vezes o mesmo fecha dando o erro CE-34878-0, como proceder?",
+      "true_intent": "network_outage_connection",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@380199 Boa noite! No seguinte link vai encontrar como solucionar esse código de erro: https://t.co/m4YgP0cQK5"
+    },
+    {
+      "example_id": "eval_100",
+      "customer_text": "how do i solve error ce-34878-0?  so disappointed with playstation. look like many people encounter n u all r doing nothing about it.",
+      "true_intent": "network_outage_connection",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@402563 Hello Jason. Let's look into that. Review the next article for further info on error code CE-34878-0: https://t.co/W7AhTUulnd"
+    },
+    {
+      "example_id": "eval_102",
+      "customer_text": "hey there I keep getting a ce-34878-0 seems my ps4 dosnt have enough memory :-/ it crashes on 7 days and fallout 4",
+      "true_intent": "network_outage_connection",
+      "pred_intent": "hardware_system_crash",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "AUTO_HANDLE",
+      "routing_reason": "Standard self-service Safe Mode database rebuild and troubleshooting guidance.",
+      "draft_reply": "Hello! If your console is freezing or looping, try starting in Safe Mode by holding the power button until you hear a second beep, then select Option 4 (Rebuild Database). For hardware repairs, visit https://hardware.support.playstation.com.",
+      "historical_reply": "@413466  Sorry for the inconvenience. please follow the steps in the next link: https://t.co/XCIaKDYqME"
+    },
+    {
+      "example_id": "eval_110",
+      "customer_text": "I have an error CE-35694-7 I don't know what that is",
+      "true_intent": "network_outage_connection",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@196440 Hey Alex. What you were doing in the console when you got this error code? \nPlease provide us more details"
+    },
+    {
+      "example_id": "eval_161",
+      "customer_text": "why is my speeds so slow when my phone gets 50/mbps constantly? How can this be improved? https://t.co/b5syp2877W",
+      "true_intent": "network_outage_connection",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@444593 Let's check out the next article for steps on how to improve the network connection:  https://t.co/zDkTYZPxlr"
+    },
+    {
+      "example_id": "eval_162",
+      "customer_text": "why do I keep getting ignored when trying to ask for help?",
+      "true_intent": "general_inquiry_other",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@244691 Sorry for the delay. Please provide us more details of the issue that you are having."
+    },
+    {
+      "example_id": "eval_163",
+      "customer_text": "Black Friday sale PS+ Early access. Will there be better black Friday deals on black friday? Yes, No, No Comment?",
+      "true_intent": "general_inquiry_other",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@688168 Hi! You can keep checking our discounts here: https://t.co/qiQQSTNCQc"
+    },
+    {
+      "example_id": "eval_164",
+      "customer_text": "hi. My ps4 keeps swithin itself off mid game. And switches itself on sometimes as well. How do I fix? Thanks.",
+      "true_intent": "general_inquiry_other",
+      "pred_intent": "general_inquiry_other",
+      "true_decision": "AUTO_HANDLE",
+      "pred_decision": "ESCALATE",
+      "routing_reason": "Intent classification confidence (0.60) is below the automated safety threshold (0.65); routed to human agent.",
+      "draft_reply": "Hi there! Thanks for reaching out to PlayStation Support. For guides, troubleshooting, and official announcements, please visit https://www.playstation.com/support.",
+      "historical_reply": "@297259 That's odd! Try going in Safe mode and reset default settings. Here is a link to show you how. https://t.co/NiCy6xiXKC"
+    }
+  ]
+}
