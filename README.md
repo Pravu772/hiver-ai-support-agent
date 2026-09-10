@@ -48,7 +48,7 @@ Run the full 180-example evaluation harness comparing the Full Pipeline against 
 ```bash
 python cli.py eval
 ```
-*(Runs in under 1 second and outputs the complete comparison table below).*
+*(With a Gemini API key this runs in ~21 minutes and outputs the complete comparison table below. The heuristic fallback completes in under 1 second.)*
 
 ---
 
@@ -71,7 +71,7 @@ python cli.py eval
 | **Evaluation Time** | ~21 min (LLM) | ~21 min (LLM) | < 1s |
 
 > [!IMPORTANT]
-> **What is misleading about our headline metric?** Read our mandatory critical self-interrogation in [report/REPORT.md](report/REPORT.md), analyzing our conservative escalation bias, class imbalance effects, and human-vs-judge calibration divergence.
+> **What is misleading about our headline metric?** Read our mandatory critical self-interrogation in [report/REPORT.md](report/REPORT.md), explaining why perfect routing (100%/100%) coexists with only 69.4% intent accuracy, the structural model-fallback degradation, and judge calibration bias.
 
 ---
 
