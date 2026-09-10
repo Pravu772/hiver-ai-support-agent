@@ -147,18 +147,17 @@ Respond ONLY with valid JSON in this exact structure:
 """
 
     models_to_try = [
-        os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite"),
-        "gemini-3.1-flash-lite-preview",
-        "gemini-3-flash-preview",
+        os.environ.get("GEMINI_MODEL", "gemini-flash-lite-latest"),
         "gemini-3.5-flash-lite",
+        "gemini-3.5-flash",
+        "gemini-3.6-flash",
     ]
     seen = set()
     models_to_try = [m for m in models_to_try if not (m in seen or seen.add(m))]
 
     raw = None
     last_err = None
-    for attempt in range(12):
-        cur_model = models_to_try[attempt % len(models_to_try)]
+    for cur_model in models_to_try:
         try:
             if client_type == "genai":
                 response = client.models.generate_content(
@@ -178,12 +177,7 @@ Respond ONLY with valid JSON in this exact structure:
                 break
         except Exception as e:
             last_err = e
-            if "429" in str(e) or "quota" in str(e).lower() or "resource_exhausted" in str(e).lower():
-                import time
-                time.sleep(3.0)
-                continue
-            import time
-            time.sleep(1.0)
+            # Immediate failover to next working model without delay
             continue
 
     if raw:

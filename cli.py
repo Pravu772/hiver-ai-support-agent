@@ -26,10 +26,14 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 def cmd_classify(args):
     """Isolated intent classification."""
-    from src.intents import classify_intent
     text = args.text
     context = getattr(args, "context", None)
-    result = classify_intent(text, context)
+    if getattr(args, "fast", False):
+        from src.intents import classify_intent_heuristic
+        result = classify_intent_heuristic(text)
+    else:
+        from src.intents import classify_intent
+        result = classify_intent(text, context)
     print(f"Intent:     {result['intent']}")
     print(f"Confidence: {result.get('confidence', 0.85):.2f}")
     if "reasoning" in result and result["reasoning"]:
@@ -39,30 +43,39 @@ def cmd_classify(args):
 
 def cmd_respond(args):
     """Isolated grounded reply drafting."""
-    from src.intents import classify_intent
     from src.retrieval import retrieve_similar_resolutions
-    from src.responder import generate_grounded_reply
+    from src.responder import generate_grounded_reply, FALLBACK_RESPONSES
     text = args.text
     intent = getattr(args, "intent", None)
+    is_fast = getattr(args, "fast", False)
     if not intent:
-        clf = classify_intent(text)
+        if is_fast:
+            from src.intents import classify_intent_heuristic
+            clf = classify_intent_heuristic(text)
+        else:
+            from src.intents import classify_intent
+            clf = classify_intent(text)
         intent = clf["intent"]
     
     retrieved = retrieve_similar_resolutions(text, top_k=3)
-    resp = generate_grounded_reply(text, intent, retrieved)
+    if is_fast:
+        reply_text = FALLBACK_RESPONSES.get(intent, FALLBACK_RESPONSES["general_inquiry_other"])
+        resp = {"reply": reply_text, "source": "fast_heuristic_template"}
+    else:
+        resp = generate_grounded_reply(text, intent, retrieved)
     print(f"Intent:         {intent}")
     print(f"Grounded reply: {resp['reply']}")
     print(f"Source:         {resp.get('source', 'unknown')}")
 
 def cmd_route(args):
     """Isolated escalation router."""
-    from src.intents import classify_intent
+    from src.intents import classify_intent_heuristic
     from src.router import route_message
     text = args.text
     intent = getattr(args, "intent", None)
     confidence = getattr(args, "confidence", 0.85)
     if not intent:
-        clf = classify_intent(text)
+        clf = classify_intent_heuristic(text)
         intent = clf["intent"]
         confidence = clf.get("confidence", 0.85)
 
@@ -74,10 +87,32 @@ def cmd_route(args):
 
 def cmd_run(args):
     """Full end-to-end pipeline execution."""
-    from src.pipeline import run_pipeline
     text = args.text
     context = getattr(args, "context", None)
-    res = run_pipeline(text, context)
+    if getattr(args, "fast", False):
+        from src.intents import classify_intent_heuristic
+        from src.retrieval import retrieve_similar_resolutions
+        from src.responder import FALLBACK_RESPONSES
+        from src.router import route_message
+        clf = classify_intent_heuristic(text)
+        intent = clf["intent"]
+        conf = clf.get("confidence", 0.85)
+        retrieved = retrieve_similar_resolutions(text, top_k=3)
+        reply = FALLBACK_RESPONSES.get(intent, FALLBACK_RESPONSES["general_inquiry_other"])
+        routing = route_message(text, intent, conf, context)
+        res = {
+            "intent": intent,
+            "confidence": conf,
+            "grounded_reply": reply,
+            "decision": routing["decision"],
+            "reason": routing["reason"],
+            "reply_source": "fast_heuristic",
+            "policy_rule_triggered": routing.get("policy_rule_triggered"),
+            "retrieved_precedents": retrieved
+        }
+    else:
+        from src.pipeline import run_pipeline
+        res = run_pipeline(text, context)
 
     print(f"Intent:         {res['intent']}")
     print(f"Grounded reply: {res['grounded_reply']}")
@@ -121,18 +156,21 @@ Examples:
     parser_run.add_argument("--text", type=str, required=True, help="Incoming customer query text")
     parser_run.add_argument("--context", type=str, default=None, help="Optional multi-turn thread context")
     parser_run.add_argument("-v", "--verbose", action="store_true", help="Print debug metadata and precedents")
+    parser_run.add_argument("--fast", action="store_true", help="Use instant deterministic fallback (sub-millisecond, offline)")
     parser_run.set_defaults(func=cmd_run)
 
     # Subcommand: classify
     parser_classify = subparsers.add_parser("classify", help="Classify intent of customer message")
     parser_classify.add_argument("--text", type=str, required=True, help="Customer query text")
     parser_classify.add_argument("--context", type=str, default=None, help="Optional multi-turn context")
+    parser_classify.add_argument("--fast", action="store_true", help="Use instant deterministic keyword classifier")
     parser_classify.set_defaults(func=cmd_classify)
 
     # Subcommand: respond
     parser_respond = subparsers.add_parser("respond", help="Draft grounded response")
     parser_respond.add_argument("--text", type=str, required=True, help="Customer query text")
     parser_respond.add_argument("--intent", type=str, default=None, help="Optional known intent")
+    parser_respond.add_argument("--fast", action="store_true", help="Use instant template fallback")
     parser_respond.set_defaults(func=cmd_respond)
 
     # Subcommand: route

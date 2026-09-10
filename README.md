@@ -80,25 +80,30 @@ python cli.py eval
 The unified `cli.py` interface supports subcommands for isolated component testing and full evaluation:
 
 ```bash
-# 1. Full end-to-end pipeline execution
+# 1. Full end-to-end pipeline execution (Live LLM via Gemini)
 python cli.py run --text "my psn account got banned for no reason"
 
-# 2. Add -v / --verbose to view top-k historical retrieved precedents and confidence
+# 2. Instant sub-millisecond execution (offline deterministic fallback)
+python cli.py run --fast --text "my psn account got banned for no reason"
+
+# 3. Add -v / --verbose to view top-k historical retrieved precedents and confidence
 python cli.py run --text "playstation network error ws-37397-9" -v
 
-# 3. Isolated intent classification
+# 4. Isolated intent classification
 python cli.py classify --text "cannot sign in forgot password"
+# (or instant: python cli.py classify --fast --text "cannot sign in forgot password")
 
-# 4. Isolated escalation router test
+# 5. Isolated escalation router test (runs in < 1ms)
 python cli.py route --text "i want a refund for the game i bought"
 
-# 5. Isolated grounded reply drafting
+# 6. Isolated grounded reply drafting
 python cli.py respond --text "how to restore licenses"
+# (or instant: python cli.py respond --fast --text "how to restore licenses")
 
-# 6. Run full evaluation harness
+# 7. Run full evaluation harness
 python cli.py eval
 
-# 7. Run judge calibration check
+# 8. Run judge calibration check
 python eval/judge_calibration.py
 ```
 
